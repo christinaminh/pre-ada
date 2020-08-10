@@ -1,124 +1,62 @@
 # Program will read in a proposed password 
 # and only accept it, if it meets all rules.
 
-# Prompt user for new password
-puts "Enter password (must contain 8 or more characters, a number, a symbol (@, %, *, or !), and an uppercase and lowercase letter)."
-password = gets.chomp
-password_reentered = nil
 
 # Password must contain 8 or more characters, 
 # a number, a symbol (@, %, *, or !), 
 # and an uppercase and lowercase letter.
-contains_8_char = false
+length_acceptable = false
 contains_number = false
 contains_symbol = false
 contains_uppercase = false
 contains_lowercase = false
-
-# Check password for requirements
-contains_8_char = true if password.length >= 8
-
-password.split('').each do |character|
-  if character == character.to_i.to_s
-    contains_number = true 
-  elsif character == "@" || character == "%" || character == "*" || character == "!"
-    contains_symbol = true
-  elsif character.upcase! != nil
-    contains_lowercase = true
-  elsif character.downcase! != nil
-    contains_uppercase = true
-  end
-end
+meets_all_requirements = false
+# Password must be re-entered a second time
+password = ""
+password_reentered = nil
 
 
 # Prompt user to enter a password until password meets all requirements
 # Once password meets requirements, prompt user to verify password 
 
 until password == password_reentered
-  
   # If password does not meet requirements, 
   # let user know what they did wrong 
   # and make them reenter the password until they enter an acceptable password
-  until contains_8_char && contains_number && contains_symbol && contains_uppercase && contains_lowercase
-    puts "Invalid password. "
-
-    puts "Password must contain 8 characters." if contains_8_char == false
-
-    puts "Password must contain a number." if contains_number == false
-    
-    puts "Password must contain a symbol." if contains_symbol == false
-
-    puts "Password must contain an uppercase letter." if contains_uppercase == false
-
-    puts "Password must contain a lowercase letter." if contains_lowercase == false
-
-    # Prompt user for new password
+  until meets_all_requirements
     puts "\nEnter password (must contain 8 or more characters, a number, a symbol (@, %, *, or !), and an uppercase and lowercase letter)."
     password = gets.chomp
-    
-    # Reset password requirements
-    contains_8_char = false
-    contains_number = false
-    contains_symbol = false
-    contains_uppercase = false
-    contains_lowercase = false
 
-    # Check password for requirements
-    contains_8_char = true if password.length >= 8
+    length_acceptable = password.length >= 8
+    puts "Password must contain 8 characters." unless length_acceptable
 
-    password.split('').each do |character|
-      if character == character.to_i.to_s
-        contains_number = true 
-      elsif character == "@" || character == "%" || character == "*" || character == "!"
-        contains_symbol = true
-      elsif character.upcase! != nil
-        contains_lowercase = true
-      elsif character.downcase! != nil
-        contains_uppercase = true
-      end
-    end
+    contains_number = password.count("0-9") > 0
+    puts "Password must contain a number." unless contains_number
 
+    contains_symbol = (password.include? "@") || (password.include? "%" ) || (password.include? "*") || (password.include? "!" )
+    puts "Password must contain a symbol." unless contains_symbol
+
+    contains_lowercase = password != password.upcase
+    puts "Password must contain a lowercase letter." unless contains_lowercase
+
+    contains_uppercase = password != password.downcase
+    puts "Password must contain an uppercase letter." unless contains_uppercase
+
+    meets_all_requirements = length_acceptable && contains_number && contains_symbol && contains_uppercase && contains_lowercase
   end
 
-  # Make the user enter the password a second time to verify, 
-  # and if it's not the same as the original password, 
-  # make them repeat the process
+  # Ask user to verify password by typing it again. 
+  # If password does not match, start over again with new password.
   puts "Verify password: "
   password_reentered = gets.chomp
 
   if password == password_reentered
     puts "Password accepted."
-    
   else
     puts "Password does not match."
-
-    # Prompt user for new password
-    puts "\nEnter password (must contain 8 or more characters, a number, a symbol (@, %, *, or !), and an uppercase and lowercase letter)."
-    password = gets.chomp
-
     # Reset password requirements
+    meets_all_requirements = false
     password_reentered = nil
-    contains_8_char = false
-    contains_number = false
-    contains_symbol = false
-    contains_uppercase = false
-    contains_lowercase = false
-
-    # Check password for requirements
-    contains_8_char = true if password.length >= 8
-
-    password.split('').each do |character|
-      if character == character.to_i.to_s
-        contains_number = true 
-      elsif character == "@" || character == "%" || character == "*" || character == "!"
-        contains_symbol = true
-      elsif character.upcase! != nil
-        contains_lowercase = true
-      elsif character.downcase! != nil
-        contains_uppercase = true
-      end
-    end
-
   end
 end
 
