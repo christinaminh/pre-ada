@@ -1,89 +1,87 @@
 # An electronic election program that tracks votes, total votes, and determines a winner.
 
 # Accepts input from the user and outputs the winner of the election
-
 # Input: Poll 10 people for their election vote
 # Output: Print the total votes cast as well as the winner of the election
 
-candidates = [
-  { name: "Donald Duck", votes: donald_duck_votes },
-  { name: "Minnie Mouse", votes: minnie_mouse_votes },
-  { name: "Goofy", votes: goofy_votes }
-]
 
-puts "Welcome to my election voting program.
-Election candidates are: Donald Duck, Minnie Mouse, Goofy"
+# Considers how to handle more than 3 candidates
+candidates = {
+  "Donald Duck" => { votes: 0 }, 
+  "Minnie Mouse" => { votes: 0 },
+  "Goofy" => { votes: 0 }
+}
 
-donald_duck_votes = 0
-minnie_mouse_votes = 0
-goofy_votes = 0
-valid_entry = false
+# Introduce program and read number of votes user will enter
+print "Welcome to my election voting program.
+Election candidates are: Donald Duck, Minnie Mouse, Goofy.
+Number of votes to enter: "
 
+# Considers how to handle more than 10 votes
+num_entries = gets.chomp.to_i
+
+# Read in user votes and track votes for each candidate
 i = 1
-3.times do
-  puts "Vote #{i}: "
-  vote = gets.chomp.upcase
+num_entries.times do
+  valid_entry = false
+# Handles write in votes and incorrect spelling
   until valid_entry
-    case vote
-      when "DONALD DUCK"
+    print "Vote #{i}: "
+    vote = gets.chomp.upcase
+
+    candidates.each_key do |name|
+      if vote == name.upcase
+        candidates[name][:votes] += 1
         valid_entry = true
-        donald_duck_votes += 1
-      when "MINNIE MOUSE"
-        valid_entry = true
-        minnie_mouse_votes += 1
-      when "GOOFY"
-        valid_entry = true
-        goofy_votes += 1
-      else
-        puts "Invalid entry. Please enter valid candidate: "
-        vote = gets.chomp.upcase
+      end
     end
+    
+    puts "\nInvalid entry." unless valid_entry
   end
 
-  valid_entry = false
   i += 1
 end
 
-
-
-votes_sorted = candidates.sort_by{ |candidate| candidate[:votes] }
-
-most_votes = votes_sorted.last[:votes]
-puts "most votes #{most_votes}"
-
+# Sorts candidates by number of votes to determine winner(s) with the most votes
 winners = []
 
-candidates.each do |candidate|
-  if candidate[:votes] == most_votes
-    winners << candidate[:name]
+votes_sorted = candidates.sort_by{ |name, candidate_data| candidate_data[:votes] }
+
+most_votes = votes_sorted.last.last[:votes]
+
+# Handles ties for a winner
+candidates.each  do |name, candidate_data|
+  if candidate_data[:votes] == most_votes
+    winners << name
   end
 end
 
+# Prints election results including votes for each candidate and the winner(s)
+puts "\nELECTION RESULTS....
 
-puts "ELECTION RESULTS....
+Vote Summary:"
 
-Vote Summary:
-Goofy - #{goofy_votes} vote(s)
-Minnie Mouse - #{minnie_mouse_votes} vote(s)
-Donald Duck - #{donald_duck_votes} vote(s)"
+# Prints out each candidate and their total number of votes
+candidates.each do |name, candidate_data|
+  print "#{name} - #{candidate_data[:votes]} "
+  # Handles grammar of vote summary saying vote or votes appropriately
+  if candidate_data[:votes] <= 1
+    print "vote\n"
+  else
+    print "votes\n"
+  end
+end
 
-puts winners
-
+# Prints out the winning candidate
+# Handles grammar of winner(s) depending on ties
 if winners.length == 1
-  puts "WINNER: #{winners[0]}"
+  puts "\nWINNER: #{winners[0]}"
 else
-  print "WINNERS: "
+  print "\nWINNERS: "
+
   (winners.length-1).times do |i| 
     print "#{winners[i]}, "
   end
 
-  puts winners.last
+  puts "and #{winners.last}"
 end
-
-
-# Handle ties for a winner appropriately
-# Handle grammar of vote summary saying vote or votes appropriately
-# Handle write in votes
-# Consider how to handle more than 10 votes
-# Consider how to handle more than 3 candidates
-# Refactor your code so that your code is DRY (Don't Repeat Yourself)
