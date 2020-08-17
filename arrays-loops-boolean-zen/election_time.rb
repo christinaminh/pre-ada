@@ -17,8 +17,13 @@ print "Welcome to my election voting program.
 Election candidates are: Donald Duck, Minnie Mouse, Goofy.
 Number of votes to enter: "
 
-# Considers how to handle more than 10 votes
 num_entries = gets.chomp.to_i
+
+# Considers how to handle more than 10 votes, 0 votes, or letters
+until num_entries > 0
+  print "To enter votes, please enter a number greater than 0: " 
+  num_entries = gets.chomp.to_i
+end
 
 # Read in user votes and track votes for each candidate
 i = 1
@@ -35,12 +40,29 @@ num_entries.times do
         valid_entry = true
       end
     end
-    
-    puts "\nInvalid entry." unless valid_entry
+  
+    unless valid_entry
+      puts "Candidate not found. Do you want to write in a new candidate? (Y/N)"
+      yes_or_no = gets.chomp.upcase
+
+      if yes_or_no == "Y"
+        print "Enter new candidate: "
+        candidates[gets.chomp.capitalize] = { votes: 1 }
+        valid_entry = true
+
+      elsif yes_or_no == "N"
+        puts "Please choose from existing candidates: "
+        candidates.each_key { |key| puts "#{key} " }
+      else
+        puts "\nInvalid entry."
+      end
+    end
   end
 
   i += 1
 end
+
+
 
 # Sorts candidates by number of votes to determine winner(s) with the most votes
 winners = []
@@ -65,9 +87,9 @@ Vote Summary:"
 candidates.each do |name, candidate_data|
   print "#{name} - #{candidate_data[:votes]} "
   # Handles grammar of vote summary saying vote or votes appropriately
-  if candidate_data[:votes] <= 1
+  if candidate_data[:votes] == 1 
     print "vote\n"
-  else
+  else # if 0 or multiple votes, say votes instead of vote
     print "votes\n"
   end
 end
