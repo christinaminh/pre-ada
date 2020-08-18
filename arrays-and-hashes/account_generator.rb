@@ -51,13 +51,13 @@ num_of_entries.times do |i|
   # Accounts for first names with a space in them
   if names[i].split.length == 2
     first_initial = names[i].slice(0)
-    last_name = names[i].split[1]
   elsif names[i].split.length > 2
     first_initial = names[i].split[0].slice(0)
     first_initial << names[i].split[1].slice(0)
-    last_name = names[i].split[-1]
   end
   
+  last_name = names[i].split[-1]
+
   last_3_of_id = id_numbers[i].to_s.slice(3..5) # Accounts for ID numbers whose last 3 digits are less than 100 (e.g. 111008) 
   
   emails << "#{first_initial}#{last_name}#{last_3_of_id}@adadevelopersacademy.org"
